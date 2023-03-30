@@ -1,44 +1,22 @@
-"""
-MIT License
-
-Copyright (c) 2022 Arsh
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
+pip install python-telegram-bot
 
 import requests
-from telethon import events
-from import as meow
+import telegram
+from telegram.ext import CommandHandler, Updater
 
-@meow.on(events.NewMessage(pattern="^/cosplay"))
-async def waifu(event):
-  r = requests.get("https://waifu-api.vercel.app").json() #api credit- @YASH_SHARMA_1807 on telegram
-  await event.reply(file=r)
-  
-@meow.on(events.NewMessage(pattern="^/lewd"))
-async def waifu(event):
-  r = requests.get("https://waifu-api.vercel.app/items/1").json()
-  await event.reply(file=r)
+def cosplayanime_handler(update, context):
+    # Make a request to the API to get a random anime cosplay image
+    response = requests.get('https://api.waifu.pics/sfw/cosplay-anime')
+    image_url = response.json()['url']
 
-__mod_name__ = "Cosplay"
-__help__ = """
-Just a weeb type module to get anime cosplay and lewd pictures
-- /cosplay
-- /lewd
-"""
+    # Send the image to the user
+    context.bot.send_photo(chat_id=update.effective_chat.id, photo=image_url)
+
+updater = Updater(token='6053431823:AAGvYI8gJvLknY6iTDgyW1Qmo77ILZybUI4', use_context=True)
+dispatcher = updater.dispatcher
+
+cosplayanime_handler = CommandHandler('cosplayanime', cosplayanime_handler)
+dispatcher.add_handler(cosplayanime_handler)
+
+updater.start_polling()
+updater.idle()
