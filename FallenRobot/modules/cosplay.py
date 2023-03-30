@@ -24,7 +24,7 @@ SOFTWARE.
 
 import requests
 from telethon import events
-from FallenRobot import tbot as meow
+from FallenRobot import fallen as meow
 
 @meow.on(events.NewMessage(pattern="^/cosplay"))
 async def waifu(event):
